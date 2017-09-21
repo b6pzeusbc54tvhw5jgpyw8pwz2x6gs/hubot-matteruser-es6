@@ -1,5 +1,7 @@
 # hubot-matteruser-es6
 
+[![npm package][npm-badge]][npm]
+
 **Hubot** is "chat bot" created by GitHub that listens for commands and executes actions based on your requests. 
 
 `hubot-matteruser-es6` is a Hubot adapter for [Mattermost](https://about.mattermost.com/) written in javascript es6 that uses the Mattermost [Web Services API](https://api.mattermost.com/) and WebSockets to deliver Hubot functionality. 
@@ -119,3 +121,8 @@ export MATTERMOST_PASSWORD=s3cr3tP@ssw0rd!
 ## License
 
 The MIT License. See `LICENSE` file.
+
+
+
+[npm-badge]: https://img.shields.io/npm/v/hubot-matteruser-es6.svg?style=flat-square
+[npm]: https://www.npmjs.org/package/hubot-matteruser-es6
