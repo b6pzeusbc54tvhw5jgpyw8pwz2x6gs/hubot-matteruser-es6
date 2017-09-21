@@ -9,7 +9,7 @@ services:
        hubot_name: <CHANGEME>
        hubot_description: <CHANGEME>
     restart: always
-    user: hubot-matteruser
+    user: hubot-matteruser-es6
     ports:
       - "8080:8080"
     environment:

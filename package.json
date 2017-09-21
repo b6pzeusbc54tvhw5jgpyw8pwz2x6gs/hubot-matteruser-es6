@@ -1,12 +1,10 @@
 {
-  "name": "hubot-matteruser",
-  "version": "3.9.0",
+  "name": "hubot-matteruser-es6",
+  "version": "0.1.0",
   "author": {
-    "name": "Andy Lo-A-Foe",
-    "url": "https://aemian.com/"
+    "name": "Alfred UC",
+    "email": "b6pzeusbc54tvhw5jgpyw8pwz2x6gs@gmail.com"
   },
-  "contributors": [],
-  "description": "Mattermost Adapter",
   "keywords": [
     "hubot",
     "adapter",
@@ -17,19 +15,18 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/loafoe/hubot-matteruser.git"
+    "url": "https://github.com/b6pzeusbc54tvhw5jgpyw8pwz2x6gs/hubot-matteruser-es6.git"
   },
+
   "bugs": {
-    "url": "https://github.com/loafoe/hubot-matteruser/issues",
-    "email": "support@aemian.com"
+    "url": "https://github.com/b6pzeusbc54tvhw5jgpyw8pwz2x6gs/hubot-matteruser-es6/issues"
   },
-  "devDependencies": {
-    "coffee-script": "~1.7.1"
-  },
-  "main": "./src/matteruser",
+
+  "main": "./src/index.js",
   "dependencies": {
-    "mattermost-client": "^3.9.0",
-    "parent-require": "^1.0.0",
-    "q": "^1.4.1"
+    "mattermost-client": "~3.9.0"
+  },
+  "peerDependencies": {
+    "hubot": "^3.0.1"
   }
 }

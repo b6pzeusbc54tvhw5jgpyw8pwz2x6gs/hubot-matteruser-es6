@@ -1,15 +1,17 @@
-[![Downloads](https://img.shields.io/npm/dm/hubot-matteruser.svg)](https://www.npmjs.com/package/hubot-matteruser)
-[![Version](https://img.shields.io/npm/v/hubot-matteruser.svg)](https://github.com/loafoe/hubot-matteruser/releases)
-[![Licence](https://img.shields.io/npm/l/express.svg)](https://github.com/loafoe/hubot-matteruser/blob/master/LICENSE)
-
-# hubot-matteruser
+# hubot-matteruser-es6
 
 **Hubot** is "chat bot" created by GitHub that listens for commands and executes actions based on your requests. 
 
-`hubot-matteruser` is a Hubot adapter for [Mattermost](https://about.mattermost.com/) written in coffee script that uses the Mattermost [Web Services API](https://api.mattermost.com/) and WebSockets to deliver Hubot functionality. 
+`hubot-matteruser-es6` is a Hubot adapter for [Mattermost](https://about.mattermost.com/) written in javascript es6 that uses the Mattermost [Web Services API](https://api.mattermost.com/) and WebSockets to deliver Hubot functionality. 
 
 - Learn more about [Hubot in Wired Magazine](https://www.wired.com/2015/10/the-most-important-startups-hardest-worker-isnt-a-person/)
 - Learn more about [Mattermost as an open source, self-hosted team communication server](https://about.mattermost.com/)
+
+## About current version 0.1.0
+- This version is testing currently. Do not use it in production.
+- This version is based on https://github.com/loafoe/hubot-matteruser v3.9.1
+- This version use mattermost v3 API and has been tested on mattermost v3.9.2
+- This version is compatible hubot v3.0.1 (es6 ported version)
 
 ## Description
 
@@ -47,7 +49,7 @@ Clone this repository, then build the Hubot-Matteruser container:
 docker build --build-arg hubot_owner=<owner> \
              --build-arg hubot_name=<name> \
              --build-arg hubot_description=<desc> \
-             --tag=hubot-matteruser \
+             --tag=hubot-matteruser-es6 \
              .
 ```
 
@@ -60,41 +62,28 @@ docker run -it \
            --env MATTERMOST_USER=<mm_user_email> \
            --env MATTERMOST_PASSWORD=<mm_user_password> \
            -p 8080:8080 \
-           --name hubot-matteruser \
-           hubot-matteruser
+           --name hubot-matteruser-es6 \
+           hubot-matteruser-es6
 ```
 
 ### Docker Compose
 
-To integrate with a running Mattermost instance, update docker-compose.yml accordingly and launch the bot:
-
-``` 
-docker-compose build
-docker-compose run -d
-```
-
-
-If you just want to test locally, you can find [here](https://github.com/banzo/mattermost-docker/tree/feature/hubot-matteruser) a fork of the [official Mattermost Docker Compose stack](https://github.com/mattermost/mattermost-docker) plugged to Hubot-Matteruser: 
-
+TODO
 
 ## Installation
 
 ### 1) Install a Mattermost server
 
-Follow the [Mattermost install guides](https://docs.mattermost.com/guides/administrator.html#install-guides) to set up the latest version of Mattermost 3.9.x.
-
-**IMPORTANT:** Make sure your `hubot-matteruser` and `mattermost-client` versions **match** the major version of your Mattermost server so the API versions will match. 
-
-For example, if you're using Mattermost server version 3.9.0 the _major version_ is "3.9", and it is highly recommended to use version 3.9.x of `hubot-matteruser` and `mattermost-client`. See [releases archive](https://github.com/loafoe/hubot-matteruser/releases) for older versions. 
+Follow the [Mattermost install guides](https://docs.mattermost.com/guides/administrator.html#install-guides)
 
 ### 2) Install hubot-matteruser
 
 On a separate server, install `hubot-matteruser` using the following commands: 
 
-  ```sh
+```sh
 npm install -g yo generator-hubot
-yo hubot --adapter matteruser
-  ```
+yo hubot --adapter matteruser-es6
+```
 
 Follow the instructions to set up your bot, including setup of [`mattermost-client`](https://github.com/loafoe/mattermost-client). 
 
@@ -120,26 +109,13 @@ The adapter requires the following environment variables to be defined before yo
 
 The below example assumes you have created a user `hubot@yourcompany.com` with username `hubot` and password `s3cr3tP@ssw0rd!` on your Mattermost server in the `core` team reachable on URL `https://mm.yourcompany.com/core`
 
-  ```sh
+```sh
 export MATTERMOST_HOST=mm.yourcompany.com 
 export MATTERMOST_GROUP=core
 export MATTERMOST_USER=hubot@yourcompany.com
 export MATTERMOST_PASSWORD=s3cr3tP@ssw0rd!
-  ```
-
-## Upgrade
-
-To upgrade your Hubot for Mattermost 3.9.x, find the `package.json` file in your Hubot directory and look for the line in the `dependencies` section that references `hubot-matteruser`. Change the verion so it points to `^3.9.0` of the client. Example:
-
-  ```json
-    ...
-    "dependencies": {
-      "hubot-matteruser": "^3.9.0"
-    },
-    ...
-  ```
+```
 
 ## License
 
 The MIT License. See `LICENSE` file.
-
