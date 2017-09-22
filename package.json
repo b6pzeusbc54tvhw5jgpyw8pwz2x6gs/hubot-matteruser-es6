@@ -17,14 +17,17 @@
     "type": "git",
     "url": "https://github.com/b6pzeusbc54tvhw5jgpyw8pwz2x6gs/hubot-matteruser-es6.git"
   },
-
   "bugs": {
     "url": "https://github.com/b6pzeusbc54tvhw5jgpyw8pwz2x6gs/hubot-matteruser-es6/issues"
   },
-
   "main": "./src/index.js",
   "dependencies": {
     "mattermost-client": "~3.9.0"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.0.0",
+    "eslint": "^4.7.2",
+    "eslint-plugin-import": "^2.7.0"
   },
   "peerDependencies": {
     "hubot": "^3.0.1"

@@ -30,12 +30,12 @@ class Matteruser extends Adapter {
     this.userRemoved = this.userRemoved.bind(this)
     this.error = this.error.bind(this)
 
-    let mmHost = process.env.MATTERMOST_HOST
-    let mmUser = process.env.MATTERMOST_USER
-    let mmPassword = process.env.MATTERMOST_PASSWORD
-    let mmGroup = process.env.MATTERMOST_GROUP
-    let mmWSSPort = process.env.MATTERMOST_WSS_PORT || '443'
-    let mmHTTPPort = process.env.MATTERMOST_HTTP_PORT || null
+    const mmHost = process.env.MATTERMOST_HOST
+    const mmUser = process.env.MATTERMOST_USER
+    const mmPassword = process.env.MATTERMOST_PASSWORD
+    const mmGroup = process.env.MATTERMOST_GROUP
+    const mmWSSPort = process.env.MATTERMOST_WSS_PORT || '443'
+    const mmHTTPPort = process.env.MATTERMOST_HTTP_PORT || null
     this.mmNoReply = process.env.MATTERMOST_REPLY === 'false'
     this.mmIgnoreUsers = (process.env.MATTERMOST_IGNORE_USERS != null ? process.env.MATTERMOST_IGNORE_USERS.split(',') : undefined) || []
 
@@ -99,9 +99,10 @@ class Matteruser extends Adapter {
 
   userChange(user) {
     let value
-    if ((user != null ? user.id : undefined) == null) { return; }
+    if ((user != null ? user.id : undefined) == null) return
+
     this.robot.logger.debug(`Adding user ${user.id}`)
-    let newUser = {
+    const newUser = {
       name: user.username,
       real_name: `${user.first_name} ${user.last_name}`,
       email_address: user.email,
@@ -133,17 +134,15 @@ class Matteruser extends Adapter {
   }
 
   profilesLoaded() {
-    for (let id in this.client.users) {
-      let user = this.client.users[id]
-      this.userChange(user)
+    for (const id in this.client.users) {
+      this.userChange( this.client.users[id] )
     }
   }
 
   brainLoaded() {
     this.robot.logger.info('Brain loaded')
-    for (let id in this.client.users) {
-      let user = this.client.users[id]
-      this.userChange(user)
+    for (const id in this.client.users) {
+      this.userChange( this.client.users[id] )
     }
     return true
   }
@@ -151,19 +150,23 @@ class Matteruser extends Adapter {
   send(envelope, ...strings) {
     // Check if the target room is also a user's username
     let str
-    let user = this.robot.brain.userForName(envelope.room)
+    const user = this.robot.brain.userForName(envelope.room)
 
     // If it's not, continue as normal
     if (!user) {
-      let channel = this.client.findChannelByName(envelope.room)
-      for (str of Array.from(strings)) { this.client.postMessage(str, (channel != null ? channel.id : undefined) || envelope.room); }
+      const channel = this.client.findChannelByName(envelope.room)
+      for (str of Array.from(strings)) {
+        this.client.postMessage(str, (channel != null ? channel.id : undefined) || envelope.room)
+      }
       return
     }
 
     // If it is, we assume they want to DM that user
     // Message their DM channel ID if it already exists.
     if ((user.mm != null ? user.mm.dm_channel_id : undefined) != null) {
-      for (str of Array.from(strings)) { this.client.postMessage(str, user.mm.dm_channel_id); }
+      for (str of Array.from(strings)) {
+        this.client.postMessage(str, user.mm.dm_channel_id)
+      }
       return
     }
 
@@ -171,8 +174,9 @@ class Matteruser extends Adapter {
     return this.client.getUserDirectMessageChannel(user.id, channel => {
       user.mm.dm_channel_id = channel.id
       return (() => {
-        let result = []
-        for (str of Array.from(strings)) {           result.push(this.client.postMessage(str, channel.id))
+        const result = []
+        for (str of Array.from(strings)) {
+          result.push(this.client.postMessage(str, channel.id))
         }
         return result
       })()
@@ -185,22 +189,24 @@ class Matteruser extends Adapter {
     }
 
     strings = strings.map(s => `@${envelope.user.name} ${s}`)
-    let postData = {}
-    postData.message = strings[0]
+    const postData = {
+      message: strings[0],
 
-    // Set the comment relationship
-    postData.root_id = envelope.message.id
-    postData.parent_id = postData.root_id
+      // Set the comment relationship
+      root_id: envelope.message.id,
+      parent_id: envelope.message.id,
 
-    postData.create_at = Date.now()
-    postData.user_id = this.self.id
-    postData.filename = []
+      create_at: Date.now(),
+      user_id: this.self.id,
+      filename: [],
+    }
+
     // Check if the target room is also a user's username
-    let user = this.robot.brain.userForName(envelope.room)
+    const user = this.robot.brain.userForName(envelope.room)
 
     // If it's not, continue as normal
     if (!user) {
-      let channel = this.client.findChannelByName(envelope.room)
+      const channel = this.client.findChannelByName(envelope.room)
       postData.channel_id = (channel != null ? channel.id : undefined) || envelope.room
       this.client.customMessage(postData, postData.channel_id)
       return
@@ -229,19 +235,20 @@ class Matteruser extends Adapter {
     }
 
     this.robot.logger.debug(msg)
-    let mmPost = JSON.parse(msg.data.post)
-    let mmUser = this.client.getUserByID(mmPost.user_id)
-    if (mmPost.user_id === this.self.id) { return; } // Ignore our own output
+    const mmPost = JSON.parse(msg.data.post)
+    // const mmUser = this.client.getUserByID(mmPost.user_id)
+    if (mmPost.user_id === this.self.id) return // Ignore our own output
     this.robot.logger.debug(`From: ${mmPost.user_id}, To: ${this.self.id}`)
 
-    let user = this.robot.brain.userForId(mmPost.user_id)
+    const user = this.robot.brain.userForId(mmPost.user_id)
     user.room = mmPost.channel_id
 
     let text = mmPost.message
+
     if (msg.data.channel_type === 'D') {
       if (!new RegExp(`^@?${this.robot.name}`, 'i').test(text)) { // Direct message
-      text = `${this.robot.name} ${text}`
-    }
+        text = `${this.robot.name} ${text}`
+      }
       user.mm.dm_channel_id = mmPost.channel_id
     }
     this.robot.logger.debug(`Text: ${text}`)
@@ -256,31 +263,43 @@ class Matteruser extends Adapter {
   }
 
   userAdded(msg) {
-    let mmUser = this.client.getUserByID(msg.data.user_id)
+    const mmUser = this.client.getUserByID(msg.data.user_id)
     this.userChange(mmUser)
-    let user = this.robot.brain.userForId(mmUser.id)
+    const user = this.robot.brain.userForId(mmUser.id)
     user.room = msg.broadcast.channel_id
     this.receive(new EnterMessage(user))
     return true
   }
 
   userRemoved(msg) {
-    let mmUser = this.client.getUserByID(msg.data.user_id)
-    let user = this.robot.brain.userForId(mmUser.id)
+    const mmUser = this.client.getUserByID(msg.data.user_id)
+    const user = this.robot.brain.userForId(mmUser.id)
     user.room = msg.broadcast.channel_id
     this.receive(new LeaveMessage(user))
     return true
   }
 
   slackAttachmentMessage(data) {
-    if (!data.room) { return; }
-    let msg = {}
+    if (!data.room) return
+
+    const msg = {
+      text: data.text,
+      type: "slack_attachment",
+      props: {},
+      channel_id: data.room,
+      props: {
+        attachments: data.attachments || [],
+      },
+    }
     msg.text = data.text
     msg.type = "slack_attachment"
     msg.props = {}
     msg.channel_id = data.room
     msg.props.attachments = data.attachments || []
-    if (!Array.isArray(msg.props.attachments)) { msg.props.attachments = [msg.props.attachments]; }
+
+    if (!Array.isArray(msg.props.attachments)) {
+      msg.props.attachments = [msg.props.attachments]
+    }
     if (data.username && (data.username !== this.robot.name)) {
       msg.as_user = false
       msg.username = data.username
@@ -297,12 +316,12 @@ class Matteruser extends Adapter {
   }
 
   changeHeader(channel, header) {
-    if (channel == null) { return; }
-    if (header == null) { return; }
+    if (channel == null) return
+    if (header == null) return
 
-    let channelInfo = this.client.findChannelByName(channel)
+    const channelInfo = this.client.findChannelByName(channel)
 
-    if (channelInfo == null) { return this.robot.logger.error("Channel not found"); }
+    if (channelInfo == null) { return this.robot.logger.error("Channel not found") }
 
     return this.client.setChannelHeader(channelInfo.id, header)
   }
