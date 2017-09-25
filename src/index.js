@@ -7,9 +7,17 @@ const TextMessage = Message.TextMessage
 const EnterMessage = Message.EnterMessage
 const LeaveMessage = Message.LeaveMessage
 
-class AttachmentMessage extends TextMessage {
-  constructor(user, text, file_ids, id, rawText) {
-    super(user, text, id, rawText)
+class MatterUserTextMessage extends TextMessage {
+  constructor(user, text, id, trimmedText, rawText) {
+    super(user, text, id)
+    this.trimmedText = trimmedText
+    this.rawText = rawText
+  }
+}
+
+class AttachmentMessage extends MatterUserTextMessage {
+  constructor(user, text, file_ids, id, trimmedText, rawText) {
+    super(user, text, id, trimmedText, rawText)
     this.file_ids = file_ids
   }
 }
@@ -241,6 +249,7 @@ class Matteruser extends Adapter {
 
     const rawText = mmPost.message
     let text = rawText.replace( /^(#{0,5}) /, '' )
+    const trimmedText = text.replace( new RegExp(`/^@?${this.robot.name}`, 'i'), '' )
 
     if (msg.data.channel_type === 'D') {
       if (!new RegExp(`^@?${this.robot.name}`, 'i').test(text)) { // Direct message
@@ -251,9 +260,9 @@ class Matteruser extends Adapter {
     this.robot.logger.debug(`Text: ${text}`)
 
     if (mmPost.file_ids != null) {
-      this.receive(new AttachmentMessage(user, text, mmPost.file_ids, mmPost.id, rawText))
+      this.receive(new AttachmentMessage(user, text, mmPost.file_ids, mmPost.id, trimmedText, rawText))
     } else {
-      this.receive(new TextMessage(user, text, mmPost.id, rawText))
+      this.receive(new MatterUserTextMessage(user, text, mmPost.id, trimmedText, rawText))
     }
     this.robot.logger.debug("Message sent to hubot brain.")
     return true
